@@ -1,0 +1,250 @@
+/* === Genel Ayarlar === */
+body {
+  background-color: #f0e6f6;
+  font-family: "Dancing Script", cursive;
+  /* Sayfada kaydırma çubuğu çıkmasına izin verelim ki yukarı çıkan mektup kesilmesin */
+  overflow-y: auto;
+  margin: 0;
+  padding-bottom: 50px;
+}
+
+/* Zarfın Ekranda Konumu - Kağıt yukarı çıkacağı için zarfı aşağı itiyoruz */
+.envlope-wrapper {
+  position: relative;
+  height: 380px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 150px; /* Zarfı aşağı indirdik, yukarıda boşluk bıraktık */
+}
+
+/* === Zarf Gövdesi === */
+#envelope {
+  position: relative;
+  width: 340px;
+  height: 220px;
+  background-color: #d9534f;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+/* === Mektup Kağıdı (Kritik Bölüm) === */
+.letter {
+  position: absolute; /* Zarfın içinde konumlanması için */
+  background-color: #fff;
+  width: 90%;
+  /* Başlangıçta (kapalıyken) boyut */
+  height: 95%;
+  left: 5%; /* Ortalamak için */
+  bottom: 0; /* Zarfın dibine yapışık */
+  border-radius: 6px;
+  box-shadow: 0 2px 26px rgba(0, 0, 0, 0.12);
+  overflow: hidden; /* Kapalıyken taşan yazıları gizle */
+  z-index: 1; /* Kapalıyken cebin arkasında */
+  transition: all 0.6s ease-in-out; /* Yumuşak geçiş */
+}
+
+/* Mektup İçeriği */
+.letter-content {
+  padding: 20px;
+  height: 100%;
+  overflow-y: auto; /* Yazı çok uzunsa kendi içinde de kaydırılabilir */
+  font-size: 1.1rem;
+  color: #333;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* === Zarf Parçaları (Kapak ve Cep) === */
+.front {
+  position: absolute;
+  width: 0;
+  height: 0;
+  z-index: 3; /* Kağıdın önünde dururlar */
+}
+
+/* Kapak (Üçgen) */
+.flap {
+  border-left: 170px solid transparent;
+  border-right: 170px solid transparent;
+  border-bottom: 82px solid transparent;
+  border-top: 110px solid #d9534f;
+  transform-origin: top;
+  pointer-events: none;
+  z-index: 4; /* En üstte */
+}
+
+/* Cep (Alt Kısım) */
+.pocket {
+  border-left: 170px solid #f5a3a2;
+  border-right: 170px solid #f5a3a2;
+  border-bottom: 110px solid #ff6f61;
+  border-top: 110px solid transparent;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  z-index: 3; /* Kağıdın önünde */
+}
+
+/* === AÇILMA ANİMASYONLARI (Burayı Düzenledik) === */
+
+/* 1. Adım: Kapak Açılıyor */
+.open .flap {
+  transform: rotateX(180deg);
+  transition: transform 0.4s ease, z-index 0.6s;
+  z-index: 1; /* Kapak arkaya düşüyor */
+}
+
+/* 2. Adım: Mektup Dışarı Çıkıyor */
+.open .letter {
+  /* Kağıdı çok daha yukarı itiyoruz */
+  transform: translateY(-240px);
+
+  /* Kağıdı uzatıyoruz ki bütün yazı sığsın */
+  height: 380px;
+
+  /* ÖNEMLİ: Kağıdı en üste taşıyoruz! */
+  z-index: 10;
+
+  /* Gecikmeli geçiş: Kapak açıldıktan sonra yukarı çıksın */
+  transition: transform 0.6s 0.4s ease, height 0.6s 0.4s ease, z-index 0.6s 0.4s;
+
+  /* Artık taşma olmasın, gölge belirginleşsin */
+  overflow: visible;
+}
+
+/* Kapanma Animasyonları */
+.close .flap {
+  transform: rotateX(0deg);
+  transition: transform 0.4s 0.6s ease, z-index 1s;
+  z-index: 5;
+}
+
+.close .letter {
+  transform: translateY(0px);
+  height: 95%;
+  z-index: 1;
+  transition: transform 0.4s ease, height 0.4s ease, z-index 0s 0.4s;
+}
+
+/* === Kalpler === */
+.hearts {
+  position: absolute;
+  top: 110px;
+  left: 0;
+  right: 0;
+  z-index: 2;
+}
+
+.heart {
+  position: absolute;
+  bottom: 0;
+  right: 10%;
+  pointer-events: none;
+}
+
+.heart:before,
+.heart:after {
+  position: absolute;
+  content: "";
+  left: 25px;
+  top: 0;
+  width: 25px;
+  height: 40px;
+  background: #e60073;
+  border-radius: 25px 25px 0 0;
+  transform: rotate(-45deg);
+  transform-origin: 0 100%;
+}
+
+.heart:after {
+  left: 0;
+  transform: rotate(45deg);
+  transform-origin: 100% 100%;
+}
+
+.close .heart {
+  opacity: 0;
+  animation: none;
+}
+
+.a1 {
+  left: 20%;
+  transform: scale(0.6);
+  animation: slideUp 4s linear 1, sideSway 2s ease-in-out 4 alternate;
+  animation-fill-mode: forwards;
+  animation-delay: 0.7s;
+}
+.a2 {
+  left: 55%;
+  transform: scale(1);
+  animation: slideUp 5s linear 1, sideSway 4s ease-in-out 2 alternate;
+  animation-fill-mode: forwards;
+  animation-delay: 0.7s;
+}
+.a3 {
+  left: 10%;
+  transform: scale(0.8);
+  animation: slideUp 7s linear 1, sideSway 2s ease-in-out 6 alternate;
+  animation-fill-mode: forwards;
+  animation-delay: 0.7s;
+}
+
+@keyframes slideUp {
+  0% {
+    top: 0;
+  }
+  100% {
+    top: -600px;
+  }
+}
+@keyframes sideSway {
+  0% {
+    margin-left: 0px;
+  }
+  100% {
+    margin-left: 50px;
+  }
+}
+
+/* === Butonlar === */
+.reset {
+  text-align: center;
+  margin-top: 50px; /* Butonları zarftan uzaklaştırdık */
+  position: relative;
+  z-index: 20; /* Her zaman basılabilir olsun */
+}
+
+.btn-custom {
+  background-color: #fff; /* Okunurluk için arka plan */
+  border: solid 2px #d9534f;
+  border-radius: 4px;
+  color: #d9534f;
+  padding: 10px 20px;
+  margin: 5px;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.btn-custom:hover {
+  background-color: #d9534f;
+  color: #fff;
+}
+
+/* Mobil Ayarı */
+@media (max-width: 400px) {
+  #envelope {
+    transform: scale(0.85);
+  }
+  .envlope-wrapper {
+    margin-top: 120px; /* Mobilde biraz daha yukarı alalım */
+  }
+  .open .letter {
+    transform: translateY(
+      -200px
+    ); /* Mobilde biraz daha az çıksın, ekran küçük */
+    height: 320px;
+  }
+}
